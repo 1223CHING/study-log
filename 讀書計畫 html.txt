@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考試必勝！每日讀書計畫</title>
+    <!-- Tailwind CSS for UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for beautiful icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter and Noto Sans TC for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        /* AI Button Shimmer effect */
+        .btn-ai-shimmer {
+            background: linear-gradient(90deg, #6366f1, #a855f7, #3b82f6, #6366f1);
+            background-size: 300% 100%;
+            animation: shimmer 8s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+        /* Custom scrollbar for beautiful history footprints */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(203, 213, 225, 0.8);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.8);
+        }
+        /* Confetti Canvas overlay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .mood-btn {
+            transition: all 0.2s ease;
+        }
+        .mood-btn.active {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            background-color: rgba(238, 242, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-3 sm:p-6 md:p-8">
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header: Title & Dynamic Date -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-4 px-2">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2">
+                    <span class="p-2 bg-indigo-600 text-white rounded-xl shadow-md shadow-indigo-100"><i class="fa-solid fa-graduation-cap"></i></span>
+                    考試必勝！每日讀書計畫
+                </h1>
+                <p class="text-sm text-slate-500 mt-1">自主學習 · 踏實累積 · 擁抱目標</p>
+            </div>
+            <div class="glass-card px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-sm self-start md:self-auto border border-slate-200">
+                <i class="fa-regular fa-calendar-days text-indigo-500 text-lg"></i>
+                <div>
+                    <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">今日日期</div>
+                    <div id="current-date" class="text-sm font-bold text-slate-700">載入中...</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 1. Top Dashboard: Ultimate Goal & Exam D-Day Countdown -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Ultimate Goal Card -->
+            <div class="lg:col-span-7 glass-card p-6 rounded-3xl shadow-md flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute -right-10 -bottom-10 text-slate-100 text-9xl font-black pointer-events-none opacity-50 select-none">GOAL</div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold tracking-wide uppercase">
+                            <i class="fa-solid fa-star mr-1"></i> 終極大考目標
+                        </span>
+                        <button onclick="openGoalModal()" class="text-slate-400 hover:text-indigo-600 transition-colors text-sm flex items-center gap-1 font-medium">
+                            <i class="fa-regular fa-pen-to-square"></i> 編輯
+                        </button>
+                    </div>
+                    <div id="goal-display-container">
+                        <h2 id="ultimate-goal-text" class="text-xl md:text-2xl font-black text-slate-900 leading-snug">
+                            尚未設定終極目標，點擊右上角「編輯」寫下你的願望吧！
+                        </h2>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                    <span>「目標是寫在鋼板上，計畫是寫在沙灘上。」</span>
+                </div>
+            </div>
+
+            <!-- D-Day Countdown Card -->
+            <div class="lg:col-span-5 glass-card p-6 rounded-3xl shadow-md bg-gradient-to-br from-indigo-900 to-slate-900 text-white relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 text-indigo-800 text-8xl font-bold opacity-30 select-none pointer-events-none">D-Day</div>
+                <div class="relative z-10 h-full flex flex-col justify-between">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 bg-white/10 text-indigo-200 rounded-full text-xs font-semibold tracking-wide flex items-center gap-1">
+                            <i class="fa-regular fa-clock"></i> 倒數計時器
+                        </span>
+                        <button onclick="openDDayModal()" class="text-indigo-300 hover:text-white transition-colors text-sm flex items-center gap-1">
+                            <i class="fa-regular fa-pen-to-square"></i> 設定
+                        </button>
+                    </div>
+                    
+                    <div class="my-5 text-center">
+                        <div id="countdown-exam-name" class="text-sm font-semibold tracking-wide text-indigo-200 uppercase mb-1">
+                            距離目標考試
+                        </div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-4xl md:text-5xl font-black tracking-tight" id="countdown-days">D-0</span>
+                            <span class="text-lg font-medium text-indigo-300" id="countdown-days-unit">天</span>
+                        </div>
+                        <div id="countdown-target-date" class="text-xs text-slate-400 mt-1">
+                            目標日期：尚未設定
+                        </div>
+                    </div>
+
+                    <div class="text-[10px] text-indigo-300/80 text-center border-t border-white/10 pt-2">
+                        把握每一天，時間正在悄悄為你的夢想加分
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Daily Quote Banner -->
+        <section class="glass-card p-4 rounded-2xl shadow-sm border border-indigo-50 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="text-2xl text-amber-500 animate-pulse"><i class="fa-solid fa-lightbulb"></i></div>
+                <div>
+                    <span class="text-xs font-bold text-indigo-600 tracking-wider block uppercase">今日勵志小語</span>
+                    <p id="quote-text" class="text-sm md:text-base font-medium text-slate-700 italic">
+                        「每一個成功的背後，都有無數個默默努力的黑夜。」
+                    </p>
+                </div>
+            </div>
+            <button onclick="refreshQuote()" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="換一句">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+        </section>
+
+        <!-- Main Grid Workspace -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Panel: Daily To-Do list & Mood Diary -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- 3. Daily To-Do list Card -->
+                <div class="glass-card p-6 rounded-3xl shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><i class="fa-solid fa-list-check"></i></span>
+                            <h3 class="text-lg font-bold text-slate-800">每日讀書目標</h3>
+                        </div>
+                        <span id="task-progress-badge" class="px-2.5 py-0.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">
+                            0 / 0 已完成
+                        </span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 rounded-full h-2 mb-6 overflow-hidden">
+                        <div id="task-progress-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Form to add tasks -->
+                    <form onsubmit="handleAddTask(event)" class="flex gap-2 mb-4">
+                        <input type="text" id="new-task-input" required placeholder="例如：背英文單字 L3、算數學講義 P.10-12..." 
+                               class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        <button type="submit" class="px-4 py-2.5 btn-gradient text-white font-bold rounded-xl text-sm flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-plus"></i> 新增
+                        </button>
+                    </form>
+
+                    <div class="mb-4">
+                        <button type="button" onclick="openAIModal()" class="w-full py-2.5 btn-ai-shimmer text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-100 hover:opacity-95 transition-opacity">
+                            <i class="fa-solid fa-wand-magic-sparkles animate-pulse text-sm"></i> 
+                            <span>讓 AI 老師幫我規劃今日讀書進度</span>
+                        </button>
+                    </div>
+
+                    <!-- To-Do List Containers -->
+                    <div class="space-y-2.5 max-h-80 overflow-y-auto pr-1" id="todo-list-container">
+                        <div class="text-center py-8 text-slate-400 text-sm">
+                            <i class="fa-regular fa-clipboard text-3xl mb-2 block"></i>
+                            今天還沒有新增任何任務喔！
+                        </div>
+                    </div>
+
+                    <!-- Stamp placeholder for 100% completion -->
+                    <div id="all-completed-stamp" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-center text-sm font-bold flex items-center justify-center gap-2 animate-bounce">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+                        恭喜！今日目標已全數達成！獲得成就勳章 🏆
+                    </div>
+                </div>
+
+                <!-- 5. Mood Diary Card -->
+                <div class="glass-card p-6 rounded-3xl shadow-md">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><i class="fa-regular fa-face-smile"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">今日心情與反思</h3>
+                    </div>
+
+                    <!-- Mood Selection Emoji Buttons -->
+                    <div class="grid grid-cols-5 gap-2 mb-4">
+                        <button onclick="selectMood('happy', '😊')" id="mood-happy" class="mood-btn py-3 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 hover:bg-slate-50">
+                            <span class="text-2xl">😊</span>
+                            <span class="text-[10px] font-semibold text-slate-500">開心</span>
+                        </button>
+                        <button onclick="selectMood('calm', '😌')" id="mood-calm" class="mood-btn py-3 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 hover:bg-slate-50">
+                            <span class="text-2xl">😌</span>
+                            <span class="text-[10px] font-semibold text-slate-500">平靜</span>
+                        </button>
+                        <button onclick="selectMood('tired', '🥱')" id="mood-tired" class="mood-btn py-3 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 hover:bg-slate-50">
+                            <span class="text-2xl">🥱</span>
+                            <span class="text-[10px] font-semibold text-slate-500">疲憊</span>
+                        </button>
+                        <button onclick="selectMood('anxious', '🥺')" id="mood-anxious" class="mood-btn py-3 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 hover:bg-slate-50">
+                            <span class="text-2xl">🥺</span>
+                            <span class="text-[10px] font-semibold text-slate-500">焦慮</span>
+                        </button>
+                        <button onclick="selectMood('fighting', '🔥')" id="mood-fighting" class="mood-btn py-3 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 hover:bg-slate-50">
+                            <span class="text-2xl">🔥</span>
+                            <span class="text-[10px] font-semibold text-slate-500">奮鬥中</span>
+                        </button>
+                    </div>
+
+                    <!-- Reflection input and archive button -->
+                    <div class="space-y-3">
+                        <textarea id="reflection-input" placeholder="簡短記錄今天的讀書狀態、遇到的瓶頸或自我激勵吧..." rows="3"
+                                  class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                        
+                        <button onclick="handleArchiveProgress()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-100">
+                            <i class="fa-solid fa-box-archive"></i> 歸檔今日學習足跡並重設
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Panel: Statistics & History footprint -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- 4. Cumulative Statistics Panel -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-card p-5 rounded-2xl shadow-sm text-center">
+                        <div class="text-slate-400 text-xs font-semibold mb-1">累積讀書天數</div>
+                        <div id="stat-study-days" class="text-3xl font-black text-indigo-600">0</div>
+                        <div class="text-[10px] text-slate-400 mt-1">滴水穿石的堅持</div>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm text-center">
+                        <div class="text-slate-400 text-xs font-semibold mb-1">累計完成任務</div>
+                        <div id="stat-tasks-completed" class="text-3xl font-black text-emerald-600">0</div>
+                        <div class="text-[10px] text-slate-400 mt-1">每一步都算數</div>
+                    </div>
+                </div>
+
+                <!-- History Footprint Tracker -->
+                <div class="glass-card p-6 rounded-3xl shadow-md flex flex-col h-[460px]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fa-solid fa-shoe-prints"></i></span>
+                            <h3 class="text-lg font-bold text-slate-800">歷史學習足跡</h3>
+                        </div>
+                        <button onclick="clearHistory()" class="text-slate-400 hover:text-rose-500 transition-colors text-xs flex items-center gap-1">
+                            <i class="fa-regular fa-trash-can"></i> 清除歷史
+                        </button>
+                    </div>
+
+                    <!-- Footprint Logs Container -->
+                    <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="history-logs-container">
+                        <div class="text-center py-20 text-slate-400 text-sm">
+                            <i class="fa-solid fa-map-location-dot text-4xl mb-3 block opacity-60"></i>
+                            尚未有歸檔紀錄，今天讀完書後點擊「歸檔」即可記錄第一天！
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modals (Built custom for seamless experience, no window alerts) -->
+    <!-- Goal Editing Modal -->
+    <div id="goal-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md mx-4 transform scale-95 transition-transform duration-300" id="goal-modal-card">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="p-1.5 bg-amber-100 text-amber-600 rounded-lg"><i class="fa-solid fa-crown"></i></span>
+                    設定終極大考目標
+                </h3>
+                <button onclick="closeGoalModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">這會是出現在網頁頂部最顯眼的位置，寫下一句能激起你戰鬥力的宏大目標吧！</p>
+            <input type="text" id="goal-modal-input" placeholder="例如：考上台大資工、學測衝刺突破55級分！" 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4">
+            <div class="flex gap-2 justify-end">
+                <button onclick="closeGoalModal()" class="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-50">取消</button>
+                <button onclick="saveGoalGoal()" class="px-4 py-2 btn-gradient text-white font-bold rounded-xl text-sm">儲存設定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- D-Day Editing Modal -->
+    <div id="dday-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md mx-4 transform scale-95 transition-transform duration-300" id="dday-modal-card">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg"><i class="fa-regular fa-clock"></i></span>
+                    設定目標大考 D-Day
+                </h3>
+                <button onclick="closeDDayModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">設定你的重大考試日期與名稱，我們會每天為你精準計算剩餘的時間。</p>
+            
+            <div class="space-y-4 mb-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">考試名稱</label>
+                    <input type="text" id="dday-modal-name-input" placeholder="例如：大學學測、期末考、統測" 
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">大考日期</label>
+                    <input type="date" id="dday-modal-date-input" 
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                </div>
+            </div>
+
+            <div class="flex gap-2 justify-end">
+                <button onclick="closeDDayModal()" class="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-50">取消</button>
+                <button onclick="saveDDaySetting()" class="px-4 py-2 btn-gradient text-white font-bold rounded-xl text-sm">確認儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Planner Modal -->
+    <div id="ai-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md mx-4 transform scale-95 transition-transform duration-300" id="ai-modal-card">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="p-1.5 bg-purple-100 text-purple-600 rounded-lg"><i class="fa-solid fa-robot"></i></span>
+                    AI 智慧讀書規劃師
+                </h3>
+                <button onclick="closeAIModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">告訴 AI 老師你今天打算攻克的科目或單元，我們將根據你的終極目標產出最適合的 3-5 個精細執行步驟！</p>
+            
+            <div class="space-y-4 mb-5" id="ai-form-fields">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">今天研讀主軸與範圍 (科目、章節)</label>
+                    <textarea id="ai-modal-subject-input" placeholder="例如：學測英文文法複習、高一數學三角函數、歷史第一冊 L1" rows="2"
+                              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">學習進度風格強度</label>
+                    <select id="ai-modal-intensity" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white">
+                        <option value="平衡適中">⚖️ 穩打穩紮（3個目標，最推薦）</option>
+                        <option value="溫和複習">🌿 熱身保溫（2-3個目標，適合狀態一般時）</option>
+                        <option value="精實衝刺">🔥 超極限戰鬥（4-5個目標，適合精力充沛時）</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading Spinner Container -->
+            <div id="ai-loading-container" class="hidden py-8 flex flex-col items-center justify-center text-center space-y-4">
+                <div class="relative w-16 h-16">
+                    <div class="absolute inset-0 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin"></div>
+                    <div class="absolute inset-2 bg-white rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 animate-pulse text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <p id="ai-loading-text" class="text-sm font-bold text-indigo-600 animate-pulse">正在精研你的讀書計畫...</p>
+                    <p class="text-[10px] text-slate-400 mt-1">「好的計畫是成功的一半，AI 正在分析大考目標...」</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 justify-end" id="ai-modal-buttons">
+                <button onclick="closeAIModal()" class="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-50">取消</button>
+                <button onclick="generateAITasks()" class="px-5 py-2 btn-gradient text-white font-bold rounded-xl text-sm flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-brain"></i> 生成每日任務
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-2 text-sm">
+        <span id="toast-icon" class="text-amber-400"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // Inspiring quotes database specially selected for high school students
+        const QUOTES = [
+            "「每一個成功的背後，都有無數個默默努力的黑夜。」",
+            "「星光不問趕路人，時光不負有心人。」",
+            "「種一棵樹最好的時間是十年前，其次是現在。」",
+            "「你現在付出的努力，都是在給未來的自己一對翅膀。」",
+            "「今天的汗水，將會成為明天收穫時最燦爛的淚水。」",
+            "「不怕路長，只怕志短。只要在路上，就沒有到不了的遠方。」",
+            "「所謂的光輝歲月，並不是以後閃耀的日子，而是無人問津時你對夢想的偏執。」",
+            "「不求與人相比，但求超越自己。今天的你比昨天進步，那就是成功！」",
+            "「夢想不會逃走，逃走的往往只有自己。加油！」",
+            "「書山有路勤為徑，學海無涯苦作舟。再堅持一下下！」",
+            "「這一次，你是為了自己的尊嚴與未來而戰。」",
+            "「你讀過的書、算過的題，都會在不久的將來，拼湊出你最想要的答案。」"
+        ];
+
+        const AI_LOADING_LINES = [
+            "AI 老師正在調配適合你的進度魔法...",
+            "正在翻閱課綱大綱並規劃步驟...",
+            "結合你的終極大考目標進行深度拆解...",
+            "正在過濾繁雜內容，提煉出最實用的精確目標...",
+            "即將大功告成！祝今天的你元氣滿滿..."
+        ];
+
+        // State Store
+        let appState = {
+            ultimateGoal: "考上你的目標！💪",
+            examName: "116年全國聯招",
+            examDate: "", // default calculated during load
+            todos: [
+                { id: 1, text: "練習115年選擇考古題", completed: false },
+                { id: 2, text: "讀備課用書", completed: false },
+                { id: 3, text: "寫2個解釋名詞", completed: false }
+            ],
+            selectedMood: "fighting",
+            selectedMoodEmoji: "🔥",
+            reflection: "",
+            history: []
+        };
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            setInitialExamDate();
+            loadFromLocalStorage();
+            updateTodayDateDisplay();
+            updateDashboard();
+            updateTodos();
+            updateHistoryFootprint();
+            refreshQuote();
+            initConfetti();
+        };
+
+        // Set default D-Day to next year's January 20th if none is set
+        function setInitialExamDate() {
+            const now = new Date();
+            const nextYear = now.getFullYear() + (now.getMonth() >= 0 ? 1 : 0);
+            appState.examDate = `${nextYear}-05-08`; // Rough typical Academic Test date
+        }
+
+        // LocalStorage helpers
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('study_planner_state');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    // Merge states carefully to support incremental updates
+                    appState = { ...appState, ...parsed };
+                } catch(e) {
+                    console.error("載入存檔錯誤", e);
+                }
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('study_planner_state', JSON.stringify(appState));
+        }
+
+        // Show Toast Utility
+        function showNotification(message, iconClass = "fa-solid fa-info-circle") {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            icon.innerHTML = `<i class="${iconClass}"></i>`;
+            msg.innerText = message;
+
+            toast.classList.remove('translate-y-10', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        }
+
+        // Render functions
+        function updateTodayDateDisplay() {
+            const now = new Date();
+            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const dayName = days[now.getDay()];
+            
+            document.getElementById('current-date').innerText = `${year}年${month}月${date}日 ${dayName}`;
+        }
+
+        function updateDashboard() {
+            // Render ultimate goal
+            document.getElementById('ultimate-goal-text').innerText = appState.ultimateGoal || "點擊右上角編輯你的終極大考目標！🏆";
+
+            // Calculate D-Day
+            const ddayLabel = document.getElementById('countdown-exam-name');
+            const ddayCounter = document.getElementById('countdown-days');
+            const ddayUnit = document.getElementById('countdown-days-unit');
+            const ddayTarget = document.getElementById('countdown-target-date');
+
+            if (!appState.examDate) {
+                ddayLabel.innerText = "尚未設定大考日期";
+                ddayCounter.innerText = "D-?";
+                ddayUnit.innerText = "";
+                ddayTarget.innerText = "請點擊右上角進行設定";
+                return;
+            }
+
+            const today = new Date();
+            // strip hours
+            const todayClean = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const targetParts = appState.examDate.split('-');
+            const targetDate = new Date(parseInt(targetParts[0]), parseInt(targetParts[1]) - 1, parseInt(targetParts[2]));
+
+            const diffTime = targetDate.getTime() - todayClean.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            ddayLabel.innerText = `距離 ${appState.examName || '大考'}`;
+            ddayTarget.innerText = `目標日期：${appState.examDate}`;
+
+            if (diffDays > 0) {
+                ddayCounter.innerText = `D-${diffDays}`;
+                ddayUnit.innerText = "天";
+                ddayCounter.className = "text-4xl md:text-5xl font-black tracking-tight text-white";
+            } else if (diffDays === 0) {
+                ddayCounter.innerText = "今日大考！";
+                ddayUnit.innerText = "💪";
+                ddayCounter.className = "text-2xl md:text-3xl font-black tracking-tight text-yellow-300 animate-pulse";
+            } else {
+                ddayCounter.innerText = `已過 ${Math.abs(diffDays)}`;
+                ddayUnit.innerText = "天";
+                ddayCounter.className = "text-3xl md:text-4xl font-black tracking-tight text-slate-300";
+            }
+        }
+
+        // Render Daily To-Do list
+        function updateTodos() {
+            const container = document.getElementById('todo-list-container');
+            const progressBadge = document.getElementById('task-progress-badge');
+            const progressBar = document.getElementById('task-progress-bar');
+            const stamp = document.getElementById('all-completed-stamp');
+
+            if (appState.todos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        <i class="fa-regular fa-clipboard text-3xl mb-2 block"></i>
+                        今天還沒有新增任何任務喔！
+                    </div>
+                `;
+                progressBadge.innerText = "0 / 0 已完成";
+                progressBar.style.width = "0%";
+                stamp.classList.add('hidden');
+                return;
+            }
+
+            const completedCount = appState.todos.filter(t => t.completed).length;
+            const totalCount = appState.todos.length;
+            const completionPercent = (completedCount / totalCount) * 100;
+
+            progressBadge.innerText = `${completedCount} / ${totalCount} 已完成`;
+            progressBar.style.width = `${completionPercent}%`;
+
+            // Render Stamp if all completed and list isn't empty
+            if (completedCount === totalCount && totalCount > 0) {
+                stamp.classList.remove('hidden');
+            } else {
+                stamp.classList.add('hidden');
+            }
+
+            let html = '';
+            appState.todos.forEach(todo => {
+                html += `
+                    <div class="flex items-center justify-between p-3.5 bg-white/60 hover:bg-white border border-slate-100 rounded-xl transition-all shadow-sm group">
+                        <div class="flex items-center gap-3 flex-1 min-w-0 mr-2">
+                            <button onclick="toggleTodo(${todo.id})" class="text-lg transition-colors text-slate-300 hover:text-indigo-500 focus:outline-none">
+                                ${todo.completed ? 
+                                    '<i class="fa-solid fa-circle-check text-indigo-500"></i>' : 
+                                    '<i class="fa-regular fa-circle text-slate-300"></i>'}
+                            </button>
+                            <span class="text-sm font-medium truncate ${todo.completed ? 'text-slate-400 line-through' : 'text-slate-700'}" 
+                                  onclick="toggleTodo(${todo.id})" class="cursor-pointer">
+                                ${escapeHtml(todo.text)}
+                            </span>
+                        </div>
+                        <button onclick="deleteTodo(${todo.id})" class="text-slate-300 hover:text-rose-500 transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Render cumulative statistics and history footprints
+        function updateHistoryFootprint() {
+            // Update stats
+            const totalStudyDays = appState.history.length;
+            const totalTasksCompleted = appState.history.reduce((sum, item) => sum + item.completedCount, 0);
+
+            document.getElementById('stat-study-days').innerText = totalStudyDays;
+            document.getElementById('stat-tasks-completed').innerText = totalTasksCompleted;
+
+            // Render history logs list
+            const container = document.getElementById('history-logs-container');
+            if (appState.history.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-slate-400 text-sm">
+                        <i class="fa-solid fa-map-location-dot text-4xl mb-3 block opacity-60"></i>
+                        尚未有歸檔紀錄，今天讀完書後點擊「歸檔」即可記錄第一天！
+                    </div>
+                `;
+                return;
+            }
+
+            // Render from newest to oldest
+            let html = '';
+            [...appState.history].reverse().forEach(record => {
+                const percent = record.totalCount > 0 ? Math.round((record.completedCount / record.totalCount) * 100) : 0;
+                
+                let tasksHtml = '';
+                if (record.tasks && record.tasks.length > 0) {
+                    tasksHtml = `
+                        <div class="mt-2 pt-2 border-t border-slate-200/60 space-y-1 bg-slate-50/50 p-2 rounded-xl">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">當日讀書清單：</div>
+                            <div class="space-y-1 max-h-24 overflow-y-auto pr-1">
+                                ${record.tasks.map(t => `
+                                    <div class="flex items-center gap-1.5 text-xs text-slate-600">
+                                        ${t.completed ? 
+                                            '<i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>' : 
+                                            '<i class="fa-regular fa-circle text-slate-300 text-[10px]"></i>'}
+                                        <span class="truncate ${t.completed ? 'line-through text-slate-400' : 'font-semibold text-slate-700'}">${escapeHtml(t.text)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="p-4 bg-white/70 border border-slate-100 rounded-2xl shadow-sm space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-indigo-500"><i class="fa-solid fa-calendar-check mr-1"></i> ${record.date}</span>
+                            <span class="text-base" title="當日心情">${record.moodEmoji || '😐'}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-slate-600">
+                            <span class="font-semibold">完成度: ${record.completedCount}/${record.totalCount} 項 (${percent}%)</span>
+                            <div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+                        ${tasksHtml}
+                        ${record.reflection ? `
+                            <p class="text-xs text-slate-500 italic bg-slate-50 p-2 rounded-lg border-l-2 border-slate-300 mt-1 line-clamp-2" title="${escapeHtml(record.reflection)}">
+                                「${escapeHtml(record.reflection)}」
+                            </p>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Goal Editing Modal control
+        function openGoalModal() {
+            const modal = document.getElementById('goal-modal');
+            const card = document.getElementById('goal-modal-card');
+            
+            document.getElementById('goal-modal-input').value = appState.ultimateGoal || "";
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeGoalModal() {
+            const modal = document.getElementById('goal-modal');
+            const card = document.getElementById('goal-modal-card');
+            
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveGoalGoal() {
+            const inputVal = document.getElementById('goal-modal-input').value.trim();
+            if (inputVal) {
+                appState.ultimateGoal = inputVal;
+                saveToLocalStorage();
+                updateDashboard();
+                showNotification("終極目標設定成功！加油！🌟", "fa-solid fa-crown text-amber-400");
+                closeGoalModal();
+            }
+        }
+
+        // D-Day Editing Modal control
+        function openDDayModal() {
+            const modal = document.getElementById('dday-modal');
+            const card = document.getElementById('dday-modal-card');
+            
+            document.getElementById('dday-modal-name-input').value = appState.examName || "大考";
+            document.getElementById('dday-modal-date-input').value = appState.examDate || "";
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeDDayModal() {
+            const modal = document.getElementById('dday-modal');
+            const card = document.getElementById('dday-modal-card');
+            
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveDDaySetting() {
+            const nameInput = document.getElementById('dday-modal-name-input').value.trim();
+            const dateInput = document.getElementById('dday-modal-date-input').value;
+
+            if (!dateInput) {
+                showNotification("請選擇有效的考試日期！📅", "fa-solid fa-circle-exclamation text-rose-400");
+                return;
+            }
+
+            appState.examName = nameInput || "大考";
+            appState.examDate = dateInput;
+            
+            saveToLocalStorage();
+            updateDashboard();
+            showNotification("大考倒數時間設定完成！⏳", "fa-regular fa-clock text-indigo-400");
+            closeDDayModal();
+        }
+
+        // AI Modal Controls
+        function openAIModal() {
+            const modal = document.getElementById('ai-modal');
+            const card = document.getElementById('ai-modal-card');
+            
+            // Clear inputs and reset UI
+            document.getElementById('ai-modal-subject-input').value = "";
+            document.getElementById('ai-modal-intensity').selectedIndex = 0;
+            
+            document.getElementById('ai-form-fields').classList.remove('hidden');
+            document.getElementById('ai-modal-buttons').classList.remove('hidden');
+            document.getElementById('ai-loading-container').classList.add('hidden');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeAIModal() {
+            const modal = document.getElementById('ai-modal');
+            const card = document.getElementById('ai-modal-card');
+            
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Call Gemini API to generate daily tasks
+        async function generateAITasks() {
+            const subjectInput = document.getElementById('ai-modal-subject-input').value.trim();
+            const intensity = document.getElementById('ai-modal-intensity').value;
+
+            if (!subjectInput) {
+                showNotification("請輸入你今天想要讀的科目或章節範圍！📚", "fa-solid fa-circle-exclamation text-rose-400");
+                return;
+            }
+
+            // UI Transition to Loading State
+            document.getElementById('ai-form-fields').classList.add('hidden');
+            document.getElementById('ai-modal-buttons').classList.add('hidden');
+            const loadingContainer = document.getElementById('ai-loading-container');
+            const loadingText = document.getElementById('ai-loading-text');
+            loadingContainer.classList.remove('hidden');
+
+            // Dynamic loading message rotations
+            let loadingInterval = setInterval(() => {
+                const randomLine = AI_LOADING_LINES[Math.floor(Math.random() * AI_LOADING_LINES.length)];
+                loadingText.innerText = randomLine;
+            }, 2000);
+
+            // Construct LLM Prompts & Structured Query
+            const systemPrompt = "你是一位充滿熱忱、有智慧的台灣高中導師。你要幫助學生將他們當天想要研讀的廣泛章節，拆解成3-5個「具體、好落實、具備實操性」的讀書目標清單。字句必須精簡扼要，口氣溫暖和煦且能帶來正向激勵。";
+            
+            const userQuery = `
+                【學生的終極大考目標】：${appState.ultimateGoal}
+                【今天想攻克或複習的單元/科目】：${subjectInput}
+                【期望的學習規劃強度風格】：${intensity}
+                
+                請為這位同學規劃 3 到 5 個具體的、今天內可落實的細部讀書計畫目標。
+                例如，如果他想讀「三角函數」，不要寫「讀完三角函數」，而要幫他拆解為「複弦定理公式並理解原理」、「練習講義基礎題 5 題」等極易執行的步驟。
+                每個規劃請保持精簡（25字以內），請完全以「繁體中文（台灣繁體）」格式回答。
+            `;
+
+            const apiKey = ""; // Canvas Runtime will automatically inject this
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        description: "每日具體讀書計畫任務清單",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                "taskName": { 
+                                    "type": "STRING",
+                                    "description": "具體易執行的每日學習小任務目標" 
+                                }
+                            },
+                            "required": ["taskName"]
+                        }
+                    }
+                },
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                }
+            };
+
+            // Implement Exponential Backoff for API stability
+            let attempts = 0;
+            const maxAttempts = 3;
+            let responseReceived = false;
+            let resultJSON = null;
+
+            while (attempts < maxAttempts && !responseReceived) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        const candidate = result.candidates?.[0];
+                        if (candidate && candidate.content?.parts?.[0]?.text) {
+                            resultJSON = JSON.parse(candidate.content.parts[0].text);
+                            responseReceived = true;
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Gemini API 嘗試次數 ${attempts + 1} 失敗：`, error);
+                }
+
+                if (!responseReceived) {
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
+                    }
+                }
+            }
+
+            clearInterval(loadingInterval);
+
+            // Process response
+            if (responseReceived && resultJSON && Array.isArray(resultJSON) && resultJSON.length > 0) {
+                // Add generated tasks to current todos
+                resultJSON.forEach(item => {
+                    if (item.taskName && item.taskName.trim()) {
+                        const newId = appState.todos.length > 0 ? Math.max(...appState.todos.map(t => t.id)) + 1 : 1;
+                        appState.todos.push({
+                            id: newId,
+                            text: item.taskName.trim(),
+                            completed: false
+                        });
+                    }
+                });
+
+                saveToLocalStorage();
+                updateTodos();
+                closeAIModal();
+                showNotification("AI 導師成功為你量身打造了學習計畫！衝刺吧！🚀", "fa-solid fa-wand-magic-sparkles text-purple-400");
+            } else {
+                // Failback / Error feedback
+                document.getElementById('ai-form-fields').classList.remove('hidden');
+                document.getElementById('ai-modal-buttons').classList.remove('hidden');
+                loadingContainer.classList.add('hidden');
+                showNotification("AI 規劃時出了點小差錯，請再點擊一次重試看看！🔌", "fa-solid fa-triangle-exclamation text-rose-500");
+            }
+        }
+
+        // Random Quote selection
+        function refreshQuote() {
+            const randomIndex = Math.floor(Math.random() * QUOTES.length);
+            document.getElementById('quote-text').innerText = QUOTES[randomIndex];
+        }
+
+        // Add to-do item
+        function handleAddTask(event) {
+            event.preventDefault();
+            const input = document.getElementById('new-task-input');
+            const text = input.value.trim();
+            if (text) {
+                const newId = appState.todos.length > 0 ? Math.max(...appState.todos.map(t => t.id)) + 1 : 1;
+                appState.todos.push({
+                    id: newId,
+                    text: text,
+                    completed: false
+                });
+                input.value = '';
+                saveToLocalStorage();
+                updateTodos();
+            }
+        }
+
+        // Toggle to-do item completed
+        function toggleTodo(id) {
+            const todo = appState.todos.find(t => t.id === id);
+            if (todo) {
+                const wasCompleted = todo.completed;
+                todo.completed = !todo.completed;
+                saveToLocalStorage();
+                updateTodos();
+
+                // If all completed right after this action, trigger fireworks
+                const completedCount = appState.todos.filter(t => t.completed).length;
+                if (!wasCompleted && completedCount === appState.todos.length && appState.todos.length > 0) {
+                    triggerConfetti();
+                    showNotification("太厲害了！今日讀書目標全數完成！🏆", "fa-solid fa-trophy text-yellow-400");
+                }
+            }
+        }
+
+        // Delete to-do item
+        function deleteTodo(id) {
+            appState.todos = appState.todos.filter(t => t.id !== id);
+            saveToLocalStorage();
+            updateTodos();
+        }
+
+        // Mood Selection Handling
+        function selectMood(moodKey, emoji) {
+            // Remove active classes from all buttons
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
+            // Set state
+            appState.selectedMood = moodKey;
+            appState.selectedMoodEmoji = emoji;
+            // Activate button
+            const activeBtn = document.getElementById(`mood-${moodKey}`);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        // Set default mood button as active visually on start
+        setTimeout(() => {
+            selectMood(appState.selectedMood || 'fighting', appState.selectedMoodEmoji || '🔥');
+        }, 100);
+
+        // Archive Day Logic
+        function handleArchiveProgress() {
+            const totalCount = appState.todos.length;
+            const completedCount = appState.todos.filter(t => t.completed).length;
+            const reflectionText = document.getElementById('reflection-input').value.trim();
+
+            if (totalCount === 0) {
+                showNotification("今天還沒設定任何讀書目標，沒辦法歸檔喔！", "fa-solid fa-circle-exclamation text-amber-500");
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getMonth() + 1}/${now.getDate()}`;
+
+            // Add new history record, storing the actual tasks detailed data!
+            const newHistoryItem = {
+                date: dateStr,
+                completedCount: completedCount,
+                totalCount: totalCount,
+                mood: appState.selectedMood,
+                moodEmoji: appState.selectedMoodEmoji,
+                reflection: reflectionText,
+                tasks: appState.todos.map(t => ({ text: t.text, completed: t.completed }))
+            };
+
+            appState.history.push(newHistoryItem);
+            
+            // Clean up today's panel
+            appState.todos = [];
+            document.getElementById('reflection-input').value = '';
+            appState.selectedMood = "fighting";
+            appState.selectedMoodEmoji = "🔥";
+            selectMood("fighting", "🔥");
+
+            saveToLocalStorage();
+            updateTodos();
+            updateHistoryFootprint();
+            
+            // Trigger beautiful archiving celebratory feedback
+            triggerConfetti();
+            showNotification("今日讀書足跡歸檔成功！祝明天也順利！🚀", "fa-solid fa-circle-check text-emerald-400");
+        }
+
+        // Clear History with simple internal notification block
+        function clearHistory() {
+            if (appState.history.length === 0) return;
+            
+            if (confirm("你確定要清除所有的歷史足跡嗎？這會讓你的累積天數與累積任務重新計算喔！")) {
+                appState.history = [];
+                saveToLocalStorage();
+                updateHistoryFootprint();
+                showNotification("已清除歷史足跡，讓我們重新開始累積！💪", "fa-regular fa-trash-can text-rose-400");
+            }
+        }
+
+        // HTML escaping utility
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Custom self-contained Canvas Confetti Engine (100% reliable)
+        let canvas, ctx;
+        let confetti = [];
+        const confettiCount = 120;
+        const gravity = 0.5;
+        const terminalVelocity = 5;
+        const drag = 0.075;
+        const colors = [
+            { front: '#4f46e5', back: '#4338ca' }, // Indigo
+            { front: '#10b981', back: '#059669' }, // Emerald
+            { front: '#f59e0b', back: '#d97706' }, // Amber
+            { front: '#ec4899', back: '#db2777' }, // Pink
+            { front: '#3b82f6', back: '#2563eb' }  // Blue
+        ];
+
+        function initConfetti() {
+            canvas = document.getElementById('confetti-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function randomRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createConfettiParticle() {
+            return {
+                color: colors[Math.floor(Math.random() * colors.length)],
+                dimensions: {
+                    x: randomRange(10, 20),
+                    y: randomRange(10, 30)
+                },
+                position: {
+                    x: randomRange(0, canvas.width),
+                    y: canvas.height - 10 // shoot from bottom
+                },
+                rotation: randomRange(0, 2 * Math.PI),
+                scale: {
+                    x: 1,
+                    y: 1
+                },
+                velocity: {
+                    x: randomRange(-25, 25),
+                    y: randomRange(-20, -35) // intense burst upwards
+                }
+            };
+        }
+
+        let isRunning = false;
+        function triggerConfetti() {
+            confetti = [];
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push(createConfettiParticle());
+            }
+            if (!isRunning) {
+                isRunning = true;
+                animateConfetti();
+            }
+        }
+
+        function animateConfetti() {
+            if (confetti.length === 0) {
+                isRunning = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            confetti.forEach((particle, index) => {
+                particle.position.x += particle.velocity.x;
+                particle.position.y += particle.velocity.y;
+                particle.velocity.x -= particle.velocity.x * drag;
+                particle.velocity.y += gravity;
+                particle.rotation += particle.velocity.x * 0.05;
+
+                // draw piece
+                ctx.save();
+                ctx.translate(particle.position.x, particle.position.y);
+                ctx.rotate(particle.rotation);
+                
+                ctx.scale(particle.scale.x, particle.scale.y);
+                ctx.fillStyle = particle.color.front;
+                ctx.fillRect(-particle.dimensions.x / 2, -particle.dimensions.y / 2, particle.dimensions.x, particle.dimensions.y);
+                ctx.restore();
+
+                // delete particles falling out of frame
+                if (particle.position.y > canvas.height) {
+                    confetti.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(animateConfetti);
+        }
+    </script>
+</body>
+</html>
